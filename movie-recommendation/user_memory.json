@@ -1,0 +1,13 @@
+{
+    "user123": {
+        "movies": [
+            "Harry Potter",
+            "Narnia"
+        ],
+        "genres": [
+            "Adventure",
+            "Action"
+        ],
+        "country": "Canada"
+    }
+}
