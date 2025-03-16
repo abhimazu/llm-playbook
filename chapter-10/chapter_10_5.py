@@ -46,12 +46,17 @@ def arxiv_query(query: str) -> str:
     else:
         return f"Error: Unable to query ArXiv for '{query}'."
 
-def celsius_to_fahrenheit(celsius: float) -> str:
+def celsius_to_fahrenheit(celsius: str) -> str:
     """
     Tool 3: Convert Celsius to Fahrenheit.
     """
-    fahrenheit = (celsius * 9/5) + 32
-    return f"{celsius}°C is {fahrenheit}°F."
+    try:
+        # Convert input to float
+        celsius_value = float(celsius.strip())
+        fahrenheit = (celsius_value * 9/5) + 32
+        return f"{celsius_value}°C is {fahrenheit}°F."
+    except ValueError:
+        return f"Error: '{celsius}' is not a valid temperature value."
 
 def save_text_to_file(params: str) -> str:
     """
