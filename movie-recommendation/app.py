@@ -4,8 +4,8 @@ import requests
 from openai import OpenAI
 from justwatch import JustWatch
 
-os.environ["OPENAI_API_KEY"] = "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"
-os.environ["OMDB_API_KEY"] = "d7c33457"
+os.environ["OPENAI_API_KEY"] = ""
+os.environ["OMDB_API_KEY"] = ""
 
 
 # -------------------------
