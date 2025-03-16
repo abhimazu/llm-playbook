@@ -1,23 +1,25 @@
 import json
 import os
 import requests
-import openai
+from openai import OpenAI
 from justwatch import JustWatch
 
-os.environ["OPENAI_API_KEY"] = ""
-os.environ["OMDB_API_KEY"] = ""
+os.environ["OPENAI_API_KEY"] = "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"
+os.environ["OMDB_API_KEY"] = "d7c33457"
 
 
 # -------------------------
 # Configuration / API Keys
 # -------------------------
-openai.api_key = os.getenv("OPENAI_API_KEY")
-if not openai.api_key:
+api_key = os.getenv("OPENAI_API_KEY")
+if not api_key:
     raise ValueError("Please set your OPENAI_API_KEY environment variable.")
 
 OMDB_API_KEY = os.getenv("OMDB_API_KEY")
 if not OMDB_API_KEY:
     raise ValueError("Please set your OMDB_API_KEY environment variable.")
+
+client = OpenAI(api_key=api_key)
 
 # -------------------------
 # Memory Module
@@ -166,13 +168,13 @@ class MovieRecommenderAgent:
             {"role": "user", "content": prompt}
         ]
         try:
-            response = openai.ChatCompletion.create(
+            response = client.chat.completions.create(
                 model="gpt-4o-mini",
                 messages=messages,
                 temperature=0.7,
                 max_tokens=150
             )
-            recommendation_text = response["choices"][0]["message"]["content"].strip()
+            recommendation_text = response.choices[0].message.content.strip()
             try:
                 # Expecting a JSON array from the LLM.
                 recommended_movies = json.loads(recommendation_text)
@@ -318,19 +320,19 @@ def run_agent(agent, user_input):
         {"role": "user", "content": user_input}
     ]
     
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model="gpt-4o-mini",  # A model that supports function calling.
         messages=messages,
         functions=function_definitions,
         function_call="auto"
     )
     
-    message = response["choices"][0]["message"]
+    message = response.choices[0].message
     
     # If the LLM decided to call a function, dispatch accordingly.
-    if message.get("function_call"):
-        function_name = message["function_call"]["name"]
-        arguments = message["function_call"].get("arguments")
+    if message.function_call:
+        function_name = message.function_call.name
+        arguments = message.function_call.get("arguments")
         try:
             args = json.loads(arguments) if arguments else {}
         except Exception as e:
@@ -363,15 +365,15 @@ def run_agent(agent, user_input):
         })
         
         # Ask the LLM to generate a final response.
-        second_response = openai.ChatCompletion.create(
+        second_response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=messages
         )
-        final_message = second_response["choices"][0]["message"]["content"]
+        final_message = second_response.choices[0].message.content
         print("Assistant:", final_message)
     else:
         # If no function call was made, simply output the assistant's message.
-        print("Assistant:", message["content"])
+        print("Assistant:", message.content)
 
 # -------------------------
 # Main Interactive Loop
