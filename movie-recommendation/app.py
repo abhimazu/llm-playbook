@@ -4,9 +4,6 @@ import requests
 from openai import OpenAI
 from justwatch import JustWatch
 
-os.environ["OPENAI_API_KEY"] = "<YOUR_OPENAI>"
-os.environ["OMDB_API_KEY"] = "<OMDB_API_KEY>"
-
 
 # -------------------------
 # Configuration / API Keys
